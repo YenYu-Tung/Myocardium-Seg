@@ -2,6 +2,9 @@ import sys
 from pathlib import Path
 import os
 
+os.environ["RAY_TEMPDIR"] = "/tmp/ray"
+os.makedirs(os.environ["RAY_TEMPDIR"], exist_ok=True)
+
 # ensure project root is importable when running outside the original /nfs path
 _this_dir = Path(__file__).resolve().parent
 for candidate in (_this_dir, *_this_dir.parents):
