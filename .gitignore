@@ -1,0 +1,11 @@
+41_testing_image_01/
+41_testing_image_02/
+41_testing_image_03/
+41_training_image_01/
+41_training_image_02/
+41_training_image_03/
+41_training_label/
+inference_outputs/
+workspace/dataset/chgh/
+__pycache__/
+**/__pycache__/
