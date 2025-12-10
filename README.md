@@ -27,7 +27,6 @@ project_root/
 ├─ requirements.txt
 └─ README.md
 ```
-
 ## 資料準備
 - 原始資料解壓縮成以下資料夾：41_training_image_*/、41_training_label/、41_testing_image_*/，這些資料夾需放在專案根目錄
 - 用於訓練的影像與標註需再放入 `workspace/dataset/chgh/`，檔名對應 `patientXXXX.nii.gz` 與 `patientXXXX_gt.nii.gz`。
@@ -101,3 +100,6 @@ python ensemble_masks.py --input-dirs dir_name_1 dir_name_2 dir_name_3 --output-
 ```bash
 python plot_val_curve.py --run-dirs tune_results_dir_name
 ```
+
+## 避免錯誤警告
+請避免將專案放在過多層級或資料夾名稱過長的路徑中，以免因訓練 log 檔案路徑過長而導致訓練過程出錯。
