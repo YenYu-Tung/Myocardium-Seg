@@ -4,6 +4,7 @@
 
 ```
 project_root/
+│
 ├─ workspace/
 │  ├─ augmentation/
 │  ├─ checkpoints/
@@ -14,19 +15,22 @@ project_root/
 │  ├─ entrypoints/
 │  ├─ networks/
 │  └─ optimizers/
+│
 ├─ aicup_training.py
 ├─ aicup_inference.py
 ├─ ensemble_masks.py
+│
 ├─ 41_training_image_*/
 ├─ 41_training_label/
 ├─ 41_testing_image_*/
+│
 ├─ requirements.txt
 └─ README.md
 ```
 
 ## 資料準備
-
-- 影像與標註放在 `workspace/dataset/chgh/`，檔名對應 `patientXXXX.nii.gz` 與 `patientXXXX_gt.nii.gz`。
+- 原始資料解壓縮成以下資料夾：41_training_image_*/、41_training_label/、41_testing_image_*/，這些資料夾需放在專案根目錄
+- 用於訓練的影像與標註需再放入 `workspace/dataset/chgh/`，檔名對應 `patientXXXX.nii.gz` 與 `patientXXXX_gt.nii.gz`。
 - 預設讀取 `workspace/dataset/`；若路徑不同，用 `--train-image-dirs`、`--label-dir` 指定。
 - K-fold：未提供 `--data_dicts_json` 時，可透過 `--num-folds` / `--fold-index` 直接從 `dataset/` 生成。若已有 JSON（建議放在 `workspace/exps/data_dicts/...`），用 `--data_dicts_json` 指定。
 - 只對測試資料夾（例如 `41_testing_image_*`）推論時，可用 `--img-pth` 指定路徑；或先生成 data_dicts JSON，再用 `--data-dicts-json`。
@@ -76,7 +80,7 @@ python aicup_training.py --model-name swinunetr --strong-aug --use-ema --use-amp
 
 ## 推論
 
-- 產生提交檔  
+- 產生影像標註檔  
 ```bash
 python aicup_inference.py --exp-name AICUP_training_local --zip-output file_name.zip --infer-post-process --checkpoint workspace/checkpoints/best_model.pth --model-name swinunetr
 ```

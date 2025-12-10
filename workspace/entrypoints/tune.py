@@ -2,9 +2,6 @@ import sys
 from pathlib import Path
 import os
 
-os.environ["RAY_TEMPDIR"] = "/tmp/ray"
-os.makedirs(os.environ["RAY_TEMPDIR"], exist_ok=True)
-
 # ensure project root is importable when running outside the original /nfs path
 _this_dir = Path(__file__).resolve().parent
 for candidate in (_this_dir, *_this_dir.parents):
@@ -17,12 +14,6 @@ else:
 if str(_repo_root) not in sys.path:
     sys.path.append(str(_repo_root))
 
-_ray_tmp = _repo_root / "ray_tmp"
-os.makedirs(_ray_tmp, exist_ok=True)
-os.environ.setdefault("RAY_TEMP_DIR", str(_ray_tmp))
-os.environ.setdefault("RAY_TMPDIR", str(_ray_tmp))
-
-
 def _normalize_path(path: str) -> str:
     abspath = os.path.abspath(path)
     if os.name == "nt":
@@ -30,6 +21,24 @@ def _normalize_path(path: str) -> str:
         if not abspath.startswith("\\\\?\\"):
             abspath = "\\\\?\\" + abspath
     return abspath
+
+
+def _get_ray_tmp_dir(repo_root: Path) -> Path:
+    env_override = os.environ.get("RAY_TMPDIR") or os.environ.get("RAY_TEMP_DIR")
+    if env_override:
+        return Path(env_override)
+    if os.name == "nt":
+        # Use a short path on Windows to avoid MAX_PATH issues inside Ray artifacts
+        system_drive = os.environ.get("SYSTEMDRIVE", "C:")
+        return Path(system_drive) / "raytmp"
+    return repo_root / "ray_tmp"
+
+
+_ray_tmp = _get_ray_tmp_dir(_repo_root)
+os.makedirs(_ray_tmp, exist_ok=True)
+_ray_tmp_normalized = _normalize_path(str(_ray_tmp))
+os.environ.setdefault("RAY_TEMP_DIR", _ray_tmp_normalized)
+os.environ.setdefault("RAY_TMPDIR", _ray_tmp_normalized)
 from functools import partial
 import inspect
 
